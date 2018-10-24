@@ -27,8 +27,10 @@ hero1 = shoot_img.subsurface(hero1_rect)
 hero2 = shoot_img.subsurface(hero2_rect)
 hero_pos = [200 ,500]
 
+clock = pygame.time.Clock()
 
 while True:
+    clock.tick(60)
     #绘制背景
     screen.blit(background, (0,0))
 
@@ -56,7 +58,19 @@ while True:
                 offset[event.key] = 0
 
 
-    offset_x = offset[pygame.K_RIGHT] - offset[pygame.K_LEFT]
-    offset_y = offset[pygame.K_DOWN] - offset[pygame.K_UP]
-    hero_pos = [hero_pos[0] + offset_x, hero_pos[1] + offset_y]
+    hero_x = hero_pos[0] + offset[pygame.K_RIGHT] - offset[pygame.K_LEFT]
+    hero_y = hero_pos[1] + offset[pygame.K_DOWN] - offset[pygame.K_UP]
+    if hero_pos[0] < 0:
+        hero_pos[0] = 0
+    elif hero_x > SCREEN_WIDTH - hero1_rect.width:
+        hero_pos[0] = SCREEN_WIDTH - hero1_rect.width
+    else:
+        hero_pos[0] = hero_x
+
+    if hero_y < 0:
+        hero_pos[1] = 0
+    elif hero_y > SCREEN_HEIGHT - hero1_rect.height:
+        hero_pos[1] = SCREEN_HEIGHT - hero1_rect.height
+    else:
+        hero_pos[1] = hero_y
 
