@@ -13,7 +13,7 @@ class Hero(pygame.sprite.Sprite):
         self.speed = 6
 
     def move(self,offset):
-        
+
 
 
 
