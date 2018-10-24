@@ -1,6 +1,21 @@
+# -*- coding = -utf-8 -*-
+
 import pygame
 from pygame.locals import *
 from sys import exit
+
+class Hero(pygame.sprite.Sprite):
+    def __init__(self, hero_surface, hero_init_pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = hero_surface
+        self.rect = self.image.get_rect()
+        self.rect.topleft = hero_init_pos
+        self.speed = 6
+
+    def move(self,offset):
+        
+
+
 
 #定义窗口分辨率
 SCREEN_WIDTH = 390
