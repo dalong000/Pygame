@@ -3,6 +3,21 @@
 import pygame
 from pygame.locals import *
 from sys import exit
+from random import randint
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, enemy_surface, enemy_init_pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = enemy_surface
+        self.rect = self.image.get_rect()
+        self.rect.topleft = enemy_init_pos
+        self.speed = 2
+
+    def update(self):
+        self.rect.top += self.speed
+        if self.rect.top > SCREEN_HEIGHT:
+            self.kill()
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, bullet_surface, bullet_init_pos):
@@ -95,9 +110,15 @@ hero_pos = [200 ,500]
 #创建玩家
 hero = Hero(hero_surface[0],hero_pos)
 
+#创建敌人组
+enemy1_group = pygame.sprite.Group()
 
-#bullet1
+
+#bullet1子弹图片
 bullet1_surface = shoot_img.subsurface(pygame.Rect(12,234,9,21))
+
+
+enemy1_surface = shoot_img.subsurface(pygame.Rect(32,34,45,34))
 
 
 
@@ -125,6 +146,13 @@ while True:
     hero.bullets1.update()
     #绘制子弹
     hero.bullets1.draw(screen)
+
+
+    if ticks % 30 == 0:
+        enemy = Enemy(enemy1_surface,[randint(0,SCREEN_WIDTH - enemy1_surface.get_width()), -enemy1_surface.get_height()])
+        enemy1_group.add(enemy)
+    enemy1_group.update()
+    enemy1_group.draw(screen)
 
     #更新屏幕
     pygame.display.update()
