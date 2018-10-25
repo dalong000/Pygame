@@ -12,6 +12,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = enemy_init_pos
         self.speed = 2
+        #爆炸动画索引
+        self.down_index = 0
 
     def update(self):
         self.rect.top += self.speed
@@ -113,12 +115,23 @@ hero = Hero(hero_surface[0],hero_pos)
 #创建敌人组
 enemy1_group = pygame.sprite.Group()
 
+#敌人坠毁组
+enemy1_down_group = pygame.sprite.Group()
+
 
 #bullet1子弹图片
 bullet1_surface = shoot_img.subsurface(pygame.Rect(12,234,9,21))
 
-
+#敌人类图片
 enemy1_surface = shoot_img.subsurface(pygame.Rect(32,34,45,34))
+enemy1_down_surface = []
+enemy1_down_surface.append(shoot_img.subsurface(pygame.Rect(67,47,57,43)))
+enemy1_down_surface.append(shoot_img.subsurface(pygame.Rect(73,97,57,43)))
+enemy1_down_surface.append(shoot_img.subsurface(pygame.Rect(67,96,57,43)))
+enemy1_down_surface.append(shoot_img.subsurface(pygame.Rect(30,97,57,43)))
+
+
+
 
 
 
@@ -129,7 +142,7 @@ while True:
     clock.tick(FRAME_RATE)
     #绘制背景
     screen.blit(background, (0,0))
-
+    #改变飞机动画
     if ticks >=ANIMATE_CYCLE:
         ticks = 0
     hero.image = hero_surface[ticks//(ANIMATE_CYCLE//2)]
@@ -147,12 +160,23 @@ while True:
     #绘制子弹
     hero.bullets1.draw(screen)
 
-
+    #产生敌机
     if ticks % 30 == 0:
         enemy = Enemy(enemy1_surface,[randint(0,SCREEN_WIDTH - enemy1_surface.get_width()), -enemy1_surface.get_height()])
         enemy1_group.add(enemy)
     enemy1_group.update()
     enemy1_group.draw(screen)
+
+    #检测敌机与子弹碰撞
+    enemy1_down_group.add(pygame.sprite.groupcollide(enemy1_group, hero.bullets1, True,True))
+    for enemy1_down in enemy1_down_group:
+        screen.blit(enemy1_down_surface[enemy1_down.down_index], enemy1_down.rect)
+        if ticks % (ANIMATE_CYCLE//2) ==0:
+            if enemy1_down.down_index < 3:
+                enemy1_down.down_index += 1
+            else:
+                enemy1_down_group.remove(enemy1_down)
+
 
     #更新屏幕
     pygame.display.update()
