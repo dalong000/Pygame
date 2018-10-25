@@ -94,6 +94,9 @@ pygame.display.set_caption('gamedemo')#设置标题
 #载入背景
 background = pygame.image.load('resources/image/background.PNG')
 
+#游戏结束图
+gameover = pygame.image.load('resources/image/sunqian.JPG')
+
 #载入飞机图片
 shoot_img = pygame.image.load('resources/image/shoot.png')
 #使用subsurface剪切载入的图片
@@ -164,7 +167,9 @@ while True:
     if ticks % 30 == 0:
         enemy = Enemy(enemy1_surface,[randint(0,SCREEN_WIDTH - enemy1_surface.get_width()), -enemy1_surface.get_height()])
         enemy1_group.add(enemy)
+    #控制敌机
     enemy1_group.update()
+    #绘制敌机
     enemy1_group.draw(screen)
 
     #检测敌机与子弹碰撞
@@ -176,6 +181,14 @@ while True:
                 enemy1_down.down_index += 1
             else:
                 enemy1_down_group.remove(enemy1_down)
+
+    enemy1_down_list = pygame.sprite.spritecollide(hero, enemy1_group, True)
+    if len(enemy1_down_list) > 0:
+        enemy1_down_group.add(enemy1_down_list)
+        hero.is_hit = True
+
+
+
 
 
     #更新屏幕
@@ -198,3 +211,11 @@ while True:
 
     hero.move(offset)
 
+screen.blit(gameover,(0,0))
+
+while True:
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
